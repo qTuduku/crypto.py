@@ -225,30 +225,30 @@ def get_message():
     else:
         return message
 
-
-# Цикл, который будет осуществлять функционал программы, вызывая
-# конкретную функцию.
-while True:
-    option = get_option()
-    cipher = get_cipher()
-    ru_eng = get_ru_eng()
-    message = get_message()
-    choise = option + cipher
-    dict = {
-        '12': caesar_ENCRYP,
-        '02': caesar_DECRYP,
-        '13': atbash_ENCRYP_DECRYP,
-        '03': atbash_ENCRYP_DECRYP,
-        '14': permutation_ENCRYP,
-        '04': permutation_DECRYP,
-        '15': vigenere_ENCRYP,
-        '05': vigenere_DECRYP,
-        '16': wernam_ENCRYP,
-        '06': wernam_DECRYP}
-    # Из опции и выбранного шифра строится индефикатор choise, который
-    # является ключом для словаря шифров.
-    dict[choise](message)
-    marker = input(
-        'Для выхода из программы введите "q"\nДля продолжения введите любую клавишу\n')
-    if marker == 'q':
-        break
+if __name__== "__main__":
+    # Цикл, который будет осуществлять функционал программы, вызывая
+    # конкретную функцию.
+    while True:
+        option = get_option()
+        cipher = get_cipher()
+        ru_eng = get_ru_eng()
+        message = get_message()
+        choise = option + cipher
+        dict = {
+            '12': caesar_ENCRYP,
+            '02': caesar_DECRYP,
+            '13': atbash_ENCRYP_DECRYP,
+            '03': atbash_ENCRYP_DECRYP,
+            '14': permutation_ENCRYP,
+            '04': permutation_DECRYP,
+            '15': vigenere_ENCRYP,
+            '05': vigenere_DECRYP,
+            '16': wernam_ENCRYP,
+            '06': wernam_DECRYP}
+        # Из опции и выбранного шифра строится индефикатор choise, который
+        # является ключом для словаря шифров.
+        dict[choise](message)
+        marker = input(
+            'Для выхода из программы введите "q"\nДля продолжения введите любую клавишу\n')
+        if marker == 'q':
+            break
