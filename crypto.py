@@ -1,4 +1,6 @@
-# Самые часто используемые строки и переменные вынесены в отдельный блок переменных.
+from random import randint
+# Самые часто используемые строки и переменные вынесены в отдельный блок
+# переменных.
 power_dict_eng, power_dict_ru = 26, 33
 say_encryp, say_decryp = 'Зашифрованное сообщение на ', 'Расшифрованное сообщение нa '
 say_eng, say_ru = 'Английском языке', 'Русском языке'
@@ -8,12 +10,11 @@ dict_eng = {x for x in 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'}
 dict_ru = {
     x for x in 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя'}
 
-# Класс ошибок для обработки ввода пользователя.
-class InputError(Exception):
-    pass
-
 # Функции шифрования названы по шаблону <Оф.название шифра>_<Шифрование и/или Дешифрование>.
-# Каждая функция укомплектована обрабатывать ошибки ввода пользователя и способна вызывать сама себя.
+# Каждая функция укомплектована обрабатывать ошибки ввода пользователя и
+# способна вызывать сама себя.
+
+
 def vigenere_ENCRYP(m):
     k = input('Введите ключевое слово для шифрования (str): ')
     if k.isalpha():
@@ -21,7 +22,8 @@ def vigenere_ENCRYP(m):
         slow = {
             x for x in 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯABCDEFGHIJKLMNOPQRSTUVWXYZ'}
         shift, power = 'A' if ru_eng else 'А', power_dict_eng if ru_eng else power_dict_ru
-        # Реализуется квадрат виженера с помощью представления букв в числах UNICODE.
+        # Реализуется квадрат виженера с помощью представления букв в числах
+        # UNICODE.
         k *= len(m) // len(k) + 1
         c = ''.join([chr((ord(j) + ord(k[i])) % power + ord(shift))
                     if j in slow else j for i, j in enumerate(m)])
@@ -63,7 +65,8 @@ def atbash_ENCRYP_DECRYP(m):
                'ч': 'з', 'ш': 'ж', 'щ': 'ё', 'ъ': 'е', 'ы': 'д', 'ь': 'г', 'э': 'в', 'ю': 'б', 'я': 'а', ' ': ' ', ',': ',', '.': '.', }
     m, c = m.lower(), ''
     if ru_eng:
-        c = ''.join([dict_ENG[word] if word in dict_ENG else word for word in m])
+        c = ''.join(
+            [dict_ENG[word] if word in dict_ENG else word for word in m])
     else:
         c = ''.join([dict_RU[word] if word in dict_RU else word for word in m])
     print(
@@ -130,7 +133,8 @@ def permutation_DECRYP(m):
         numOfRows, column, row = k, 0, 0
         numOfShadedBoxes, plaintext = (
             numOfColumns * numOfRows) - len(m), [''] * numOfColumns
-        # Дешифрование представляет собой воссоздание оригинальной траспанированной матрицы.
+        # Дешифрование представляет собой воссоздание оригинальной
+        # траспанированной матрицы.
         for symbol in m:
             plaintext[column] += symbol
             column += 1
@@ -142,6 +146,33 @@ def permutation_DECRYP(m):
     except ValueError:
         print(key_error)
         return permutation_DECRYP(m)
+
+
+def wernam_ENCRYP(m):
+    # Шифр Вернама использует алгебру логики (побитовое XOR) и таблицу аски
+    # В теории полностью невзламываемый
+    len_m = len(m)
+    key = [randint(17, 55295) for _ in range(len_m)]
+    crypt = [ord(m[i]) ^ key[i] for i in range(len_m)]
+    key_human_see = ''.join([chr(number) for number in key])
+    crypt_human_see = ''.join([chr(number) for number in crypt])
+    print(
+        f"""{say_encryp}{say_eng if ru_eng else say_ru}: {crypt_human_see}
+Используемый ключ шифрования: {key_human_see}\n""")
+
+
+def wernam_DECRYP(m):
+    len_m = len(m)
+    k = input(
+        'Введите ключ, которым было закодировано сообщение, его длина равна длине сообщения (str): ')
+    if len(k) != len(m):
+        print('Ошибка длины ключа\n')
+        return wernam_DECRYP(m)
+    decryp_humas_see = ''.join([chr(ord(m[i]) ^ ord(k[i]))
+                               for i in range(len_m)])
+    print(
+        f"{say_decryp}{say_eng if ru_eng else say_ru}: {decryp_humas_see}\n")
+
 
 # Следующий  блок функций фиксирует выбор пользователя на определённом функционале программы.
 # При ошибке ввода функция вызывает саму себя.
@@ -155,8 +186,8 @@ def get_option():
 
 def get_cipher():
     cipher = input(
-        "Выберите метод шифрования|дешифрования:\nШифр Цезаря - 2\nШифр Атбаша - 3\nПерестановочный шифр - 4\nШифр Виженера - 5\n")
-    if cipher not in '2345' or cipher == '' or len(cipher) > 1:
+        "Выберите метод шифрования|дешифрования:\nШифр Цезаря - 2\nШифр Атбаша - 3\nПерестановочный шифр - 4\nШифр Виженера - 5\nШифр Вернама - 6\n")
+    if cipher not in '23456' or cipher == '' or len(cipher) > 1:
         print(input_error)
         return get_cipher()
     return cipher
@@ -173,24 +204,30 @@ def get_ru_eng():
 
 def get_message():
     # Обрабатывается пустая строка, а так же несоответсвие выбранному языку
-    message = input("Введите сообщение: ")
+    message = input(
+        f"Введите сообщение, которое нужно {'закодировать: ' if option=='1' else 'раскодировать: '}")
     if message == '':
         print(f'{input_error}Пустое сообщение\n')
         return get_message()
-    elif ru_eng:
-        if all([message[i] not in dict_ru for i in range(len(message))]):
-            return message
+    elif option == '1':
+        if ru_eng:
+            if all([message[i] not in dict_ru for i in range(len(message))]):
+                return message
+            else:
+                print(f'{input_error}Текст на русском языке, выбран английский\n')
+                return get_message()
         else:
-            print(f'{input_error}Текст на русском языке, выбран английский\n')
-            return get_message()
+            if all([message[i] not in dict_eng for i in range(len(message))]):
+                return message
+            else:
+                print(f'{input_error}Текст на английском языке, выбран русский\n')
+                return get_message()
     else:
-        if all([message[i] not in dict_eng for i in range(len(message))]):
-            return message
-        else:
-            print(f'{input_error}Текст на английском языке, выбран русский\n')
-            return get_message()
+        return message
 
-# Цикл, который будет осуществлять функционал программы, вызывая конкретную функцию.
+
+# Цикл, который будет осуществлять функционал программы, вызывая
+# конкретную функцию.
 while True:
     option = get_option()
     cipher = get_cipher()
@@ -205,8 +242,11 @@ while True:
         '14': permutation_ENCRYP,
         '04': permutation_DECRYP,
         '15': vigenere_ENCRYP,
-        '05': vigenere_DECRYP}
-    # Из опции и выбранного шифра строится индефикатор choise, который является ключом для словаря шифров.
+        '05': vigenere_DECRYP,
+        '16': wernam_ENCRYP,
+        '06': wernam_DECRYP}
+    # Из опции и выбранного шифра строится индефикатор choise, который
+    # является ключом для словаря шифров.
     dict[choise](message)
     marker = input(
         'Для выхода из программы введите "q"\nДля продолжения введите любую клавишу\n')
