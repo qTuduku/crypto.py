@@ -27,7 +27,7 @@ def vigenere_ENCRYP(m):
         k *= len(m) // len(k) + 1
         c = ''.join([chr((ord(j) + ord(k[i])) % power + ord(shift))
                     if j in slow else j for i, j in enumerate(m)])
-        print(
+        return(
             f"{say_encryp}{say_eng if ru_eng else say_ru}: {c}\n")
     else:
         print(key_error)
@@ -47,7 +47,7 @@ def vigenere_DECRYP(m):
         k *= len(m) // len(k) + 1
         c = ''.join([chr((ord(j) - ord(k[i])) % power + ord(shift))
                     if j in slow else j for i, j in enumerate(m)])
-        print(
+        return(
             f"{say_decryp}{say_eng if ru_eng else say_ru}: {c}\n")
     else:
         print(key_error)
@@ -69,7 +69,7 @@ def atbash_ENCRYP_DECRYP(m):
             [dict_ENG[word] if word in dict_ENG else word for word in m])
     else:
         c = ''.join([dict_RU[word] if word in dict_RU else word for word in m])
-    print(
+    return(
         f"Итоговое сообщение на {say_eng if ru_eng else say_ru}: {c}\n")
 
 
@@ -83,7 +83,7 @@ def caesar_ENCRYP(m):
         # отличаются знаками +/-.
         m, c = m.lower(), ''.join(
             [dict_RU_ENG[(dict_RU_ENG.index(word) + k) % len(dict_RU_ENG)] if word in dict_RU_ENG else word for word in m])
-        print(
+        return(
             f"{say_encryp}{say_eng if ru_eng else say_ru}: {c}\n")
     except ValueError:
         print(key_error)
@@ -99,7 +99,7 @@ def caesar_DECRYP(m):
         dict_RU_ENG = dict_ENG if ru_eng else dict_RU
         m, c = m.lower(), ''.join(
             [dict_RU_ENG[(dict_RU_ENG.index(word) - k) % len(dict_RU_ENG)] if word in dict_RU_ENG else word for word in m])
-        print(
+        return(
             f"{say_decryp}{say_eng if ru_eng else say_ru}: {c}\n")
     except ValueError:
         print(key_error)
@@ -118,7 +118,7 @@ def permutation_ENCRYP(m):
             while currentIndex < len(m):
                 ciphertext[coloumn] += m[currentIndex]
                 currentIndex += k
-        print(
+        return(
             f"{say_encryp}{say_eng if ru_eng else say_ru}: {''.join(ciphertext)}\n")
     except ValueError:
         print(key_error)
@@ -141,7 +141,7 @@ def permutation_DECRYP(m):
             if (column == numOfColumns) or (column == numOfColumns -
                                             1 and row >= numOfRows - numOfShadedBoxes):
                 column, row = 0, row + 1
-        print(
+        return(
             f"{say_decryp}{say_eng if ru_eng else say_ru}: {''.join(plaintext)}\n")
     except ValueError:
         print(key_error)
@@ -156,7 +156,7 @@ def wernam_ENCRYP(m):
     crypt = [ord(m[i]) ^ key[i] for i in range(len_m)]
     key_human_see = ''.join([chr(number) for number in key])
     crypt_human_see = ''.join([chr(number) for number in crypt])
-    print(
+    return(
         f"""{say_encryp}{say_eng if ru_eng else say_ru}: {crypt_human_see}
 Используемый ключ шифрования: {key_human_see}\n""")
 
@@ -170,7 +170,7 @@ def wernam_DECRYP(m):
         return wernam_DECRYP(m)
     decryp_humas_see = ''.join([chr(ord(m[i]) ^ ord(k[i]))
                                for i in range(len_m)])
-    print(
+    return(
         f"{say_decryp}{say_eng if ru_eng else say_ru}: {decryp_humas_see}\n")
 
 
@@ -247,7 +247,7 @@ if __name__== "__main__":
             '06': wernam_DECRYP}
         # Из опции и выбранного шифра строится индефикатор choise, который
         # является ключом для словаря шифров.
-        dict[choise](message)
+        print(dict[choise](message))
         marker = input(
             'Для выхода из программы введите "q"\nДля продолжения введите любую клавишу\n')
         if marker == 'q':
