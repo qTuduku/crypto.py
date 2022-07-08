@@ -17,7 +17,8 @@ dict_ru = {
 # способна вызывать сама себя.
 
 def vigenere_ENCRYP(message: str, ru_eng: bool, key: str) -> str:
-    message, key = message.upper(), key.upper()
+    message = message.upper()
+    key = key.upper()
     power_dict_eng, power_dict_ru = 26, 33
     slow = {
         x for x in 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯABCDEFGHIJKLMNOPQRSTUVWXYZ'}
@@ -32,7 +33,8 @@ def vigenere_ENCRYP(message: str, ru_eng: bool, key: str) -> str:
 
 
 def vigenere_DECRYP(message: str, ru_eng: bool, key: str) -> str:
-    message, key = message.upper(), key.upper()
+    message = message.upper()
+    key = key.upper()
     power_dict_eng, power_dict_ru = 26, 33
     slow = {
         x for x in 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯABCDEFGHIJKLMNOPQRSTUVWXYZ'}
@@ -60,7 +62,8 @@ def atbash_ENCRYP_DECRYP(message: str, ru_eng: bool) -> str:
                'х': 'и', 'ц': 'и',
                'ч': 'з', 'ш': 'ж', 'щ': 'ё', 'ъ': 'е', 'ы': 'д', 'ь': 'г', 'э': 'в', 'ю': 'б', 'я': 'а', ' ': ' ',
                ',': ',', '.': '.', }
-    message, c = message.lower(), ''
+    message = message.lower()
+    c = ''
     if ru_eng:
         c = ''.join(
             [dict_ENG[word] if word in dict_ENG else word for word in message])
@@ -140,21 +143,16 @@ def wernam_ENCRYP(message: str, ru_eng: bool) -> str:
 Используемый ключ шифрования: {key_human_see}\n""")
 
 
-def wernam_DECRYP(message: str, ru_eng: bool) -> str:
-    key = input(
-        'Введите ключ, которым было зашифрованно сообщение, в формате строки (str)')
-    if key.isalpha():
-        len_m = len(message)
-        if len(key) != len(message):
-            print('Ошибка длины ключа\n')
-            return wernam_DECRYP(message, ru_eng)
-        decryp_humas_see = ''.join([chr(ord(message[i]) ^ ord(key[i]))
-                                    for i in range(len_m)])
-        return (
-            f"{say_decryp}{say_eng if ru_eng else say_ru}: {decryp_humas_see}\n")
-    else:
-        print(say_key_error)
-        return wernam_DECRYP(message, ru_eng)
+def wernam_DECRYP(message: str, ru_eng: bool, key: str) -> str:
+    len_m = len(message)
+    if len(key) != len(message):
+        print('Ошибка длины ключа\n')
+        return 'Ключ не соответсвует по длине сообщению'
+    decryp_humas_see = ''.join([chr(ord(message[i]) ^ ord(key[i]))
+                                for i in range(len_m)])
+    return (
+        f"{say_decryp}{say_eng if ru_eng else say_ru}: {decryp_humas_see}\n")
+
 
 
 # Следующий  блок функций фиксирует выбор пользователя на определённом функционале программы.
@@ -211,21 +209,22 @@ def get_message():
         return message
 
 
-def get_key():
-    if cipher == '5':
-        key = input('Введите ключ в формате слова/строки (str): ')
-        if key.isalpha():
-            return key
-        else:
-            print(say_key_error)
-            return get_key()
+def get_str_key():
+    key = input('Введите ключ в формате слова/строки (str): ')
+    if key.isalpha():
+        return key
     else:
-        try:
-            key = int(input('Введите ключ в формате числа (int)'))
-            return key
-        except ValueError:
-            print(say_key_error)
-            return get_key()
+        print(say_key_error)
+        return get_str_key()
+
+
+def get_int_key():
+    try:
+        key = int(input('Введите ключ в формате числа (int): '))
+        return key
+    except ValueError:
+        print(say_key_error)
+        return get_int_key()
 
 
 if __name__ == "__main__":
@@ -236,23 +235,26 @@ if __name__ == "__main__":
         cipher = get_cipher()
         ru_eng = get_ru_eng()
         message = get_message()
-        key = get_key()
         choise = option + cipher
+        str_key, int_key = 'l', 1
+        if cipher == '5' or (cipher == '6' and option == '0'):
+            str_key = get_str_key()
+        else:
+            int_key = get_int_key()
         dict = {
-            '12': caesar_ENCRYP,
-            '02': caesar_DECRYP,
-            '13': atbash_ENCRYP_DECRYP,
-            '03': atbash_ENCRYP_DECRYP,
-            '14': permutation_ENCRYP,
-            '04': permutation_DECRYP,
-            '15': vigenere_ENCRYP,
-            '05': vigenere_DECRYP,
-            '16': wernam_ENCRYP,
-            '06': wernam_DECRYP}
-        # Из опции и выбранного шифра строится индефикатор choise, который
-        # является ключом для словаря шифров.
-        print(dict[choise](message)(ru_eng)(key))
+            '12': caesar_ENCRYP(message, ru_eng, int_key),
+            '02': caesar_DECRYP(message, ru_eng, int_key),
+            '13': atbash_ENCRYP_DECRYP(message, ru_eng),
+            '03': atbash_ENCRYP_DECRYP(message, ru_eng),
+            '14': permutation_ENCRYP(message, ru_eng, int_key),
+            '04': permutation_DECRYP(message, ru_eng, int_key),
+            '15': vigenere_ENCRYP(message, ru_eng, str_key),
+            '05': vigenere_DECRYP(message, ru_eng, str_key),
+            '16': wernam_ENCRYP(message, ru_eng),
+            '06': wernam_DECRYP(message, ru_eng, str_key)}
+        print(dict[choise])
         marker = input(
             'Для выхода из программы введите "q"\nДля продолжения введите любую клавишу\n')
         if marker == 'q':
             break
+
