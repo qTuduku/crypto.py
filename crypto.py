@@ -154,82 +154,80 @@ def wernam_DECRYP(message: str, ru_eng: bool, key: str) -> str:
         f"{say_decryp}{say_eng if ru_eng else say_ru}: {decryp_humas_see}\n")
 
 
-
-# Следующий  блок функций фиксирует выбор пользователя на определённом функционале программы.
-# При ошибке ввода функция вызывает саму себя.
-def get_option():
-    option = input("Выберите опцию:\nШифрование - 1\nДешифрование - 0\n")
-    if option not in '01' or option == '' or len(option) > 1:
-        print(say_input_error)
-        return get_option()
-    return option
-
-
-def get_cipher():
-    cipher = input(
-        "Выберите метод шифрования|дешифрования:\nШифр Цезаря - 2\nШифр Атбаша - 3\nПерестановочный шифр - 4\nШифр Виженера - 5\nШифр Вернама - 6\n")
-    if cipher not in '23456' or cipher == '' or len(cipher) > 1:
-        print(say_input_error)
-        return get_cipher()
-    return cipher
-
-
-def get_ru_eng():
-    ru_eng = input("Выберите язык:\nАнглийский - 1\nРусский - 0\n")
-    if ru_eng not in '01' or ru_eng == '' or len(ru_eng) > 1:
-        print(say_input_error)
-        return get_ru_eng()
-    ru_eng = bool(int(ru_eng))
-    return ru_eng
-
-
-def get_message():
-    # Обрабатывается пустая строка, а так же несоответсвие выбранному языку
-    message = input(
-        f"Введите сообщение, которое нужно {'закодировать: ' if option == '1' else 'раскодировать: '}")
-    if message == '':
-        print(f'{say_input_error}Пустое сообщение\n')
-        return get_message()
-    elif option == '1':
-        if ru_eng:
-            if all([message[i] not in dict_ru for i in range(len(message))]):
-                return message
-            else:
-                print(
-                    f'{say_input_error}Текст на русском языке, выбран английский\n')
-                return get_message()
-        else:
-            if all([message[i] not in dict_eng for i in range(len(message))]):
-                return message
-            else:
-                print(
-                    f'{say_input_error}Текст на английском языке, выбран русский\n')
-                return get_message()
-    else:
-        return message
-
-
-def get_str_key():
-    key = input('Введите ключ в формате слова/строки (str): ')
-    if key.isalpha():
-        return key
-    else:
-        print(say_key_error)
-        return get_str_key()
-
-
-def get_int_key():
-    try:
-        key = int(input('Введите ключ в формате числа (int): '))
-        return key
-    except ValueError:
-        print(say_key_error)
-        return get_int_key()
-
-
 if __name__ == "__main__":
     # Цикл, который будет осуществлять функционал программы, вызывая
     # конкретную функцию.
+
+    def get_option():
+        option = input("Выберите опцию:\nШифрование - 1\nДешифрование - 0\n")
+        if option not in '01' or option == '' or len(option) > 1:
+            print(say_input_error)
+            return get_option()
+        return option
+
+
+    def get_cipher():
+        cipher = input(
+            "Выберите метод шифрования|дешифрования:\nШифр Цезаря - 2\nШифр Атбаша - 3\nПерестановочный шифр - 4\nШифр Виженера - 5\nШифр Вернама - 6\n")
+        if cipher not in '23456' or cipher == '' or len(cipher) > 1:
+            print(say_input_error)
+            return get_cipher()
+        return cipher
+
+
+    def get_ru_eng():
+        ru_eng = input("Выберите язык:\nАнглийский - 1\nРусский - 0\n")
+        if ru_eng not in '01' or ru_eng == '' or len(ru_eng) > 1:
+            print(say_input_error)
+            return get_ru_eng()
+        ru_eng = bool(int(ru_eng))
+        return ru_eng
+
+
+    def get_message():
+        # Обрабатывается пустая строка, а так же несоответсвие выбранному языку
+        message = input(
+            f"Введите сообщение, которое нужно {'закодировать: ' if option == '1' else 'раскодировать: '}")
+        if message == '':
+            print(f'{say_input_error}Пустое сообщение\n')
+            return get_message()
+        elif option == '1':
+            if ru_eng:
+                if all([message[i] not in dict_ru for i in range(len(message))]):
+                    return message
+                else:
+                    print(
+                        f'{say_input_error}Текст на русском языке, выбран английский\n')
+                    return get_message()
+            else:
+                if all([message[i] not in dict_eng for i in range(len(message))]):
+                    return message
+                else:
+                    print(
+                        f'{say_input_error}Текст на английском языке, выбран русский\n')
+                    return get_message()
+        else:
+            return message
+
+
+    def get_str_key():
+        key = input('Введите ключ в формате слова/строки (str): ')
+        if key.isalpha():
+            return key
+        else:
+            print(say_key_error)
+            return get_str_key()
+
+
+    def get_int_key():
+        try:
+            key = int(input('Введите ключ в формате числа (int): '))
+            return key
+        except ValueError:
+            print(say_key_error)
+            return get_int_key()
+
+
     while True:
         option = get_option()
         cipher = get_cipher()
@@ -257,4 +255,3 @@ if __name__ == "__main__":
             'Для выхода из программы введите "q"\nДля продолжения введите любую клавишу\n')
         if marker == 'q':
             break
-
